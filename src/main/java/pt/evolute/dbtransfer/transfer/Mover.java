@@ -2,6 +2,7 @@ package pt.evolute.dbtransfer.transfer;
 
 import java.sql.Types;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,6 +46,7 @@ public class Mover extends Connector implements Constants
     private final boolean CHECK_DEPS;
     private final boolean USE_DEST_FOR_DEPS;
     private final boolean ESCAPE_UNICODE;
+    private final String TABLES_LIST;
 
     private static final long MAX_MEM = Runtime.getRuntime().maxMemory();
 
@@ -62,6 +64,7 @@ public class Mover extends Connector implements Constants
         DST = dst;
         ESCAPE_UNICODE = "true".equals( props.getProperty( TRANSFER_ESCAPE_UNICODE ) );
         boolean ignoreEmpty = Boolean.parseBoolean( props.getProperty( ONLY_NOT_EMPTY, "false" ) );
+        TABLES_LIST = props.getProperty("TABLES_LIST", "");
 
         CON_SRC = DBConnector.getConnection( SRC, ignoreEmpty );
 
@@ -106,6 +109,15 @@ System.out.println( "Using max " + ( MAX_MEM / ( 1024 * 1024 ) ) + " MB of memor
             {
                 v = reorder( v );
             }
+        }
+        String[] tables_name = TABLES_LIST.split(",");
+        if (TABLES_LIST != "") {
+        	for (int i = 0; i < v.size(); i++) {
+        		if (!Arrays.asList(tables_name).contains(v.get(i).originalName)) {
+        			v.remove(i);
+        			i--;
+        		}
+        	}
         }
         TABLES = v.toArray( new Name[ v.size() ] );
     }
@@ -229,8 +241,8 @@ System.out.println( "Using max " + ( MAX_MEM / ( 1024 * 1024 ) ) + " MB of memor
                 buff.append( args );
                 buff.append( " )" );
                 String insert = buff.toString();
-//			PreparedStatement pstm = CON_DEST.prepareStatement( insert );
-System.out.println( "I: " + i + " " + TABLES[ i ].saneName + " sql: " + insert + " colList.sz: " + columns.size() );
+            	// PreparedStatement pstm = CON_DEST.prepareStatement( insert );
+                System.out.println( "I: " + i + " " + TABLES[ i ].saneName + " sql: " + insert + " colList.sz: " + columns.size() );
                 
                 // TODO - do only if table has identity (when target is sqlserver)
                 String pre = tr.preLoadSetup( TABLES[ i ].saneName );

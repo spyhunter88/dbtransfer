@@ -21,6 +21,7 @@ import pt.evolute.utils.string.StringPlainer;
 public class Connector
 {
 	private static final String MYSQL = "mysql";
+	private static final String ORACLE = "oracle";
 	
 	private static final Map<String,String> SCHEMAS = new HashMap<String,String>();
 	
@@ -71,6 +72,10 @@ public class Connector
 //				String dbNameAndProps = url.split( "/" )[ 3 ];
 //				result = dbNameAndProps.split( "[?]" )[ 0 ];
 				result = null;
+			}
+			else if (ORACLE.equals(db))
+			{
+				result = url.split(":")[ 5 ];
 			}
 		}
 		return result;

@@ -39,31 +39,31 @@ public class Main
 		}
 		if( "true".equalsIgnoreCase(props.getProperty( Constants.TRANSFER ) ) )
 		{
-                    if( !"true".equalsIgnoreCase( props.getProperty( Constants.TRANSFER_CHECK_DEPS ) ) )
-                    {
-			String s = props.getProperty( Constants.TRANSFER_THREADS );
-			try
-			{
-				int i = Integer.parseInt( s );
-				AsyncStatement.PARALLEL_THREADS = i;
-			}
-			catch( Exception ex )
-			{
-			}
-                    }
-                    System.out.println( "Transfering" );
-                    Mover m = new Mover( props, srcBean, dstBean );
-                    try
-                    {
-                            m.moveDB();
-                    }
-                    catch( SQLException ex )
-                    {
-                            ex.printStackTrace( System.out );
-                            ex.printStackTrace();
+            if( !"true".equalsIgnoreCase( props.getProperty( Constants.TRANSFER_CHECK_DEPS ) ) )
+            {
+				String s = props.getProperty( Constants.TRANSFER_THREADS );
+				try
+				{
+					int i = Integer.parseInt( s );
+					AsyncStatement.PARALLEL_THREADS = i;
+				}
+				catch( Exception ex )
+				{
+				}
+            }
+            System.out.println( "Transfering" );
+            Mover m = new Mover( props, srcBean, dstBean );
+            try
+            {
+                    m.moveDB();
+            }
+            catch( SQLException ex )
+            {
+                ex.printStackTrace( System.out );
+                ex.printStackTrace();
 //				ErrorLogger.logException( ex );
-                            throw ex.getNextException();
-                    }
+                throw ex.getNextException();
+            }
 		}
 		if( "true".equalsIgnoreCase( props.getProperty( Constants.CONSTRAIN ) ) )
 		{
